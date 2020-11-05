@@ -18,7 +18,7 @@ This helper generate this `/data` for you, using `docker` + `ala-install` + some
 
 ### This repo
 
-Clone or download this repository and follow these steps from there.
+Clone or download this repository and follow these steps:
 
 ### Some inventories
 
@@ -32,7 +32,7 @@ export LA_INV=/home/myuser/the/directory/where/I/unziped/the/inventories
 
 ### Some `data` directory 
 
-If you need some development environment, create a `/data` owner by you.
+If you need some development environment, create a `/data` owned by you:
 
 ```bash
 sudo mkdir /data
@@ -53,13 +53,13 @@ We'll use this `DATA_DIR` as a volume in the docker image.
 
 As we mentioned above, we use `docker` to run `ansible` inside a container and generate that LA `/data` for you. 
 
-So you need to install [docker](https://docs.docker.com/engine/install/) in the computer you are using.
+So you need to [install docker](https://docs.docker.com/engine/install/) in the computer you are using.
 
 ### Optionally the `ala-install` repository
 
 You can provide an `ala-install` cloned repository as a docker volume, or if not, we'll use a stable version for you.
 
-Let's setup this in a varible also:
+Let's setup this in a variable also:
 
 ```bash
 export ALA_INSTALL=/home/myuser/ala-install-location/
@@ -84,13 +84,18 @@ TODO publish to docker hub
 docker run --rm -it -v $DATA_DIR:/data  -v $LA_INV:/ansible/la-inventories -P -d --name la-data-config la-data-config:latest 
 ```
  
-### Run the image with some `ala-install` volume
+### Or run the image with some other `ala-install` 
+
+Clone `ala-install` in some directory. Take into account that we patch `ala-install` a bit to run some propierties/config tasks without installing sofware. You can patch it with:
+
+```bash
+(cd $ALA_INSTALL && patch -p1 < $PWD/ala-install.patch)
+```
+And run this image with that `ala-install` volume.
 
 ```bash
 docker run --rm -it -v $DATA_DIR:/data -v $LA_INV:/ansible/la-inventories -v $ALA_INSTALL:/ansible/ala-install -P -d --name la-data-config la-data-config:latest 
 ```
-
-Take into account that we patch `ala-install` a bit to run some propierties/config tasks without installing sofware.
 
 ### Setup ssh in the container
 
@@ -104,17 +109,22 @@ docker exec -i -t la-data-config bash -c "cat /ansible/la-inventories/dot-ssh-co
 docker exec -i -t la-data-config bash -c 'cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install all --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures --nodryrun'
 ```
 
-In the previous step we configured the ssh to fake a bit your inventories hostnames, so ansible will access via ssh to localhost and configure the `/data` volume.
+In the previous step we configured the `ssh` to fake a bit your inventories hostnames, so ansible will access via `ssh` to localhost and configure the `DATA_DIR` volume.
 
-and see the `uid`/`gid` of each user with:
+At the end your configs will be accesible in:
+
+```bash
+ls -l $DATA_DIR
+```
+
+Check the `uid`/`gid` of each user with:
 
 ```bash
 docker exec -i -t la-data-config bash -c 'id tomcat7; id solr; id image-service; id postgres'
 ```
-
 ## Re-run
 
-You can edit your inventories to fit better to your needs, [update the inventories](https://github.com/living-atlases/generator-living-atlas#rerunning-the-generator), and rerun the previous `ansiblew` docker exec command.
+You can edit your inventories to fit better to your needs, [update the inventories](https://github.com/living-atlases/generator-living-atlas#rerunning-the-generator), and rerun the previous `ansiblew` docker exec command to update your `DATA_DIR`.
 
 ## Stop and remove the container 
 
