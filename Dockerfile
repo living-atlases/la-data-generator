@@ -70,7 +70,10 @@ RUN mkdir -p /opt/solr/bin && \
 RUN git clone --depth 1 --branch v2.0.0 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
 
 # Disable tomcat restart and other services (we are oonly interested in configs)
-COPY ala-install.patch /ansible
-RUN (cd /ansible/ala-install && patch -p1 < /ansible/ala-install.patch) # 2020110501 (change this date to rebuild & repeat this and the following steps)
+
+RUN echo "2020110501 (change this date to rebuild & repeat this and the following steps)"
+
+COPY ala-install.patch /ansible/ala-install.patch
+RUN (cd /ansible/ala-install && patch -p1 < /ansible/ala-install.patch)
 
 CMD ["/usr/sbin/sshd", "-D"]
