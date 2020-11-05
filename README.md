@@ -131,3 +131,14 @@ You can edit your inventories to fit better to your needs, [update the inventori
 ```bash
 docker stop la-data-config
 ```
+## Sample `DATA_DIR` output
+
+![](data.png)
+
+## Caveats
+
+- Currently we don't generate `cas` and `spatial` properties, because their playbooks use `include_role` and we cannot run only the `properties` tag.
+
+## License
+
+Apache-2.0 © [Living Atlases](https://living-atlases.gbif.org)
