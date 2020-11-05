@@ -70,7 +70,7 @@ export ALA_INSTALL=/home/myuser/ala-install-location/
 Now you can build this image:
 
 ```bash
-docker build . -t la-data-config
+./do build 
 ```
 ## Or directly push
 
@@ -81,12 +81,12 @@ TODO publish to docker hub
 ### Run the image with stable `ala-install` 
 
 ```bash
-docker run --rm -it -v $DATA_DIR:/data  -v $LA_INV:/ansible/la-inventories -P -d --name la-data-config la-data-config:latest 
+./do --data=$DATA_DIR --inv=$LA_INV --ala-install=$AL_INSTALL run
 ```
  
 ### Or run the image with some other `ala-install` 
 
-Clone `ala-install` in some directory. Take into account that we patch `ala-install` a bit to run some propierties/config tasks without installing sofware. You can patch it with:
+Clone `ala-install` in some directory. Take into account that we patch `ala-install` a bit to run some properties/config tasks without installing sofware. You can patch it with:
 
 ```bash
 (cd $ALA_INSTALL && patch -p1 < $PWD/ala-install.patch)
@@ -94,19 +94,13 @@ Clone `ala-install` in some directory. Take into account that we patch `ala-inst
 And run this image with that `ala-install` volume.
 
 ```bash
-docker run --rm -it -v $DATA_DIR:/data -v $LA_INV:/ansible/la-inventories -v $ALA_INSTALL:/ansible/ala-install -P -d --name la-data-config la-data-config:latest 
+./do --data=$DATA_DIR --inv=$LA_INV --ala-install=$AL_INSTALL run
 ```
 
-### Setup ssh in the container
+### Finally, generate all `/data` in `DATA_DIR`
 
 ```bash
-docker exec -i -t la-data-config bash -c "cat /ansible/la-inventories/dot-ssh-config  | sed 's/1.2.3.X/127.0.0.1/g' | sed 's/IdentityFile/#IdentityFile/g' > /root/.ssh/config.d/la"
-```
-
-### Finally, generate `/data`
-
-```bash
-docker exec -i -t la-data-config bash -c 'cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install all --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures --nodryrun'
+./do generate
 ```
 
 In the previous step we configured the `ssh` to fake a bit your inventories hostnames, so ansible will access via `ssh` to localhost and configure the `DATA_DIR` volume.
@@ -120,7 +114,7 @@ ls -l $DATA_DIR
 Check the `uid`/`gid` of each user with:
 
 ```bash
-docker exec -i -t la-data-config bash -c 'id tomcat7; id solr; id image-service; id postgres'
+docker exec -i -t  la-data-generator bash -c 'id tomcat7; id solr; id image-service; id postgres'
 ```
 ## Re-run
 
@@ -129,11 +123,32 @@ You can edit your inventories to fit better to your needs, [update the inventori
 ## Stop and remove the container 
 
 ```bash
-docker stop la-data-config
+docker stop la-data-generator
 ```
 ## Sample `DATA_DIR` output
 
 ![](data.png)
+
+## Further help
+
+```
+$ ./do -h
+do: LA data generator
+
+Usage:
+  do [options] build
+  do [options] --data=<dir> --inv=<dir> [--ala-install=<dir>] run
+  do [options] generate
+  do -h | --help
+  do -v | --version
+
+Options:
+  --verbose            Verbose output.
+  -d --dry-run         Print the commands without actually running them.
+  -h --help            Show this help.
+  -v --version         Show version.
+
+```
 
 ## Caveats
 
