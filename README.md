@@ -40,11 +40,11 @@ sudo chown youruser:youruser /data
 export DATA_DIR=/data/
 ```
 
-or if you don't need it for a develoment environment, you can create a data directory in any other location, for instance here:
+or if you don't need it for a develoment environment, you can create a data directory in any other location:
 
 ```bash
-sudo mkdir $PWD/data
-export DATA_DIR=$PWD/data/
+mkdir /tmp/data
+export DATA_DIR=/tmp/data/
 ```
 
 We'll use this `DATA_DIR` as a volume in the docker image.
@@ -90,6 +90,8 @@ docker run --rm -it -v $DATA_DIR:/data  -v $LA_INV:/ansible/la-inventories -P -d
 docker run --rm -it -v $DATA_DIR:/data -v $LA_INV:/ansible/la-inventories -v $ALA_INSTALL:/ansible/ala-install -P -d --name la-data-config la-data-config:latest 
 ```
 
+Take into account that we patch `ala-install` a bit to run some propierties/config tasks without installing sofware.
+
 ### Setup ssh in the container
 
 ```bash
@@ -99,8 +101,10 @@ docker exec -i -t la-data-config bash -c "cat /ansible/la-inventories/dot-ssh-co
 ### Finally, generate `/data`
 
 ```bash
-docker exec -i -t la-data-config bash -c 'cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install all --tags=properties --skip=restart,image-stored-procedures --nodryrun'
+docker exec -i -t la-data-config bash -c 'cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install all --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures --nodryrun'
 ```
+
+In the previous step we configured the ssh to fake a bit your inventories hostnames, so ansible will access via ssh to localhost and configure the `/data` volume.
 
 and see the `uid`/`gid` of each user with:
 
@@ -112,3 +116,8 @@ docker exec -i -t la-data-config bash -c 'id tomcat7; id solr; id image-service;
 
 You can edit your inventories to fit better to your needs, [update the inventories](https://github.com/living-atlases/generator-living-atlas#rerunning-the-generator), and rerun the previous `ansiblew` docker exec command.
 
+## Stop and remove the container 
+
+```bash
+docker stop la-data-config
+```
