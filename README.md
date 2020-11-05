@@ -81,7 +81,7 @@ TODO publish to docker hub
 ### Run the image with stable `ala-install` 
 
 ```bash
-./do --data=$DATA_DIR --inv=$LA_INV --ala-install=$AL_INSTALL run
+./do --data=$DATA_DIR --inv=$LA_INV run
 ```
  
 ### Or run the image with some other `ala-install` 
