@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         apt-get install -y software-properties-common python-docopt sudo curl && \
         apt-get install -y python-dev git python-pip python3-minimal 'python2.*-minimal' && \
-        apt-get install -y gnupg2 python3-pip sshpass openssh-client openssh-server && \
+        apt-get install -y gnupg2 python3-pip sshpass openssh-client openssh-server vim && \
         rm -rf /var/lib/apt/lists/* && \
         apt-get clean
     
@@ -16,7 +16,7 @@ RUN mkdir /ansible && \
     mkdir -p /etc/ansible && \
     echo 'localhost' > /etc/ansible/hosts
 
-COPY ansible.cfg /root/ansible.cfg
+COPY ansible.cfg /root/.ansible.cfg
 
 RUN mkdir /ansible/la-inventories && \
     mkdir /ansible/ala-install
