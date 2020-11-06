@@ -66,7 +66,15 @@ elif $run ; then
         exit 1
     fi
 
-    # TODO data should be absolute
+    if [[ ! $data =~ ^/.* ]]; then
+        >&2 echo "Use an /absolute path for directory '$data' "
+        exit 1
+    fi
+
+    if [[ ! $inv =~ ^/.* ]]; then
+        >&2 echo "Use an /absolute path for directory '$inv' "
+        exit 1
+    fi
 
     if [[ ! -d $inv || ! -f $inv/ansiblew ]]; then
         >&2 echo "It seems that '$inv' is not a generated inventory as we expect"
