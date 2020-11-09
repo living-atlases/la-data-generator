@@ -18,7 +18,7 @@ $CMD: LA data generator
 Usage:
   $CMD [options] build
   $CMD [options] --data=<dir> --inv=<dir> [--ala-install=<dir>] run
-  $CMD [options] generate
+  $CMD [options] generate [<service>...]
   $CMD -h | --help
   $CMD -v | --version
 
@@ -48,14 +48,24 @@ docker inspect $IMGNAME | grep "Running" >/dev/null 2>&1
 if [[ $? = 0 ]]; then CONTAINER_RUNNING=1 ; else CONTAINER_RUNNING=0; fi
 set -e
 
-
 if $verbose; then
     echo build: $build
     echo run: $run
     echo generate: $generate
     echo data: $data
     echo inv: $inv
+    echo service: $service
     echo container running: $CONTAINER_RUNNING
+fi
+
+function gen() {
+    local what="$1"
+    echo "Generating config for '$what'"
+    $_D docker exec -i -t $IMGNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install $what --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures --nodryrun"
+}
+
+if [[ -n $service ]] ; then
+    services=("${service[@]}")
 fi
 
 if $build ; then
@@ -96,5 +106,11 @@ elif $run ; then
 elif $generate ; then
     if [[ $CONTAINER_RUNNING = 0 ]] ; then >&2 echo "Please use 'build' and 'run' before 'generate'"; exit 1; fi
     $_D docker exec -i -t $IMGNAME bash -c "cat /ansible/la-inventories/dot-ssh-config  | sed 's/1.2.3.X/127.0.0.1/g' | sed 's/IdentityFile/#IdentityFile/g' > /root/.ssh/config.d/la"
-    $_D docker exec -i -t $IMGNAME bash -c 'cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install all --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures --nodryrun'
+    if [[ -n $service ]] ; then
+        for s in "${services[@]}"; do
+            gen "$s"
+        done
+    else
+        gen all
+    fi
 fi

@@ -102,6 +102,11 @@ And run this image with that `ala-install` volume.
 ```bash
 ./do generate
 ```
+or just some service:
+
+```bash
+./do generate spatial
+```
 
 In the previous step we configured the `ssh` to fake a bit your inventories hostnames, so ansible will access via `ssh` to localhost and configure the `DATA_DIR` volume.
 
@@ -138,7 +143,7 @@ do: LA data generator
 Usage:
   do [options] build
   do [options] --data=<dir> --inv=<dir> [--ala-install=<dir>] run
-  do [options] generate
+  do [options] generate [<service>...]
   do -h | --help
   do -v | --version
 
