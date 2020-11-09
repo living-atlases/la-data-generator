@@ -157,7 +157,8 @@ Options:
 
 ## Caveats
 
-- Currently we don't generate `cas` and `spatial` properties, because their playbooks use `include_role` and we cannot run only the `properties` tag.
+- Currently we don't generate `cas` properties, because their playbooks use `include_role` and we cannot run only the `properties` tag.
+- We are patching `ala-install` to skip some tasks (see `ala-install.patch`), but we should try not to.
 
 ## License
 
