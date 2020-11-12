@@ -1,7 +1,29 @@
 diff --git a/ansible/roles/doi-service/tasks/main.yml b/ansible/roles/doi-service/tasks/main.yml
-index 86e2ce22..0d77bbc4 100644
+index 86e2ce22..dfa465b0 100644
 --- a/ansible/roles/doi-service/tasks/main.yml
 +++ b/ansible/roles/doi-service/tasks/main.yml
+@@ -53,8 +53,8 @@
+     dest: "{{data_dir}}/doi-service/config/doi-service-config.yml"
+     owner: doi-service
+     group: doi-service
+-  notify:
+-    - restart doi-service
++#  notify:
++#    - restart doi-service
+   tags:
+     - properties
+     - doi-service
+@@ -65,8 +65,8 @@
+     dest: "{{data_dir}}/doi-service/config/logback.groovy"
+     owner: doi-service
+     group: doi-service
+-  notify:
+-    - restart doi-service
++#  notify:
++#    - restart doi-service
+   tags:
+     - properties
+     - doi-service
 @@ -78,6 +78,7 @@
      enabled: yes
    tags:

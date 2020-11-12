@@ -62,6 +62,7 @@ RUN mkdir -p /home/ubuntu/.ssh && \
 RUN useradd tomcat7 && \
     useradd solr && \
     useradd image-service && \
+    useradd doi-service && \
     useradd postgres
 
 RUN mkdir -p /opt/solr/bin && \

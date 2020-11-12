@@ -119,7 +119,7 @@ ls -l $DATA_DIR
 Check the `uid`/`gid` of each user with:
 
 ```bash
-docker exec -i -t  la-data-generator bash -c 'id tomcat7; id solr; id image-service; id postgres'
+docker exec -i -t  la-data-generator bash -c 'id tomcat7; id solr; id image-service; id postgres; id doi-service'
 ```
 ## Re-run
 
