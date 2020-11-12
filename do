@@ -96,7 +96,7 @@ elif $run ; then
         exit 1
     fi
 
-    if [[ $CONTAINER_RUNNING = 1 ]] ; then docker stop $IMGNAME; fi
+    if [[ $CONTAINER_RUNNING = 1 ]] ; then docker stop $IMGNAME; sleep 2; fi
 
     if [[ ! -d $ala_install ]] ; then
        $_D docker run --rm -it -v $data:/data -v $inv:/ansible/la-inventories -P -d --name $IMGNAME $IMGNAME:latest
