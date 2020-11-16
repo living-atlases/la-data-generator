@@ -72,9 +72,11 @@ Now you can build this image:
 ```bash
 ./do build 
 ```
-## Or directly push
+## Or directly pull
 
-TODO publish to docker hub
+```bash
+docker pull livingatlases/la-data-generator
+```
 
 ## Run
 
