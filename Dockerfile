@@ -68,7 +68,7 @@ RUN useradd tomcat7 && \
 RUN mkdir -p /opt/solr/bin && \
     mkdir /usr/lib/biocache
 
-RUN git clone --depth 1 --branch v2.0.0 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
+RUN git clone --depth 1 --branch v2.0.1 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
 
 # Disable tomcat restart and other services (we are oonly interested in configs)
 
