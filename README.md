@@ -65,20 +65,20 @@ Let's setup this in a variable also:
 export ALA_INSTALL=/home/myuser/ala-install-location/
 ```
 
-## Build
+## 1) Build
 
 Now you can build this image:
 
 ```bash
 ./do build 
 ```
-## Or directly pull
+## Or directly pull it from docker hub
 
 ```bash
 docker pull livingatlases/la-data-generator
 ```
 
-## Run
+## 2) Run
 
 ### Run the image with stable `ala-install` 
 
@@ -99,7 +99,7 @@ And run this image with that `ala-install` volume.
 ./do --data=$DATA_DIR --inv=$LA_INV --ala-install=$AL_INSTALL run
 ```
 
-### Finally, generate all `/data` in `DATA_DIR`
+### 3) Finally, generate all `/data` in `DATA_DIR`
 
 ```bash
 ./do generate
@@ -159,8 +159,7 @@ Options:
 
 ## Caveats
 
-- Currently we don't generate `cas` properties, because their playbooks use `include_role` and we cannot run only the `properties` tag.
-- We are patching `ala-install` to skip some tasks (see `ala-install.patch`), but we should try not to.
+- While this [PR is merged](https://github.com/AtlasOfLivingAustralia/ala-install/pull/448/) we use this branch to gnerate also the properties of the CAS services.
 
 ## License
 
