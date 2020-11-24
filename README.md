@@ -14,7 +14,7 @@ So many times people ask in our slack channel for these configurations, or ask f
 
 This helper generate this `/data` for you, using `docker` + `ala-install` + some-inventories and some basic steps.
 
-## Prerequisites
+## 1) Prerequisites
 
 ### This repo
 
@@ -65,7 +65,7 @@ Let's setup this in a variable also:
 export ALA_INSTALL=/home/myuser/ala-install-location/
 ```
 
-## 1) Build
+## 2) Build
 
 Now you can build this image:
 
@@ -78,12 +78,13 @@ Now you can build this image:
 docker pull livingatlases/la-data-generator
 ```
 
-## 2) Run
+## 3) Run
 
 ### Run the image with stable `ala-install` 
 
 ```bash
 ./do --data=$DATA_DIR --inv=$LA_INV run
+
 ```
  
 ### Or run the image with some other `ala-install` 
@@ -99,7 +100,7 @@ And run this image with that `ala-install` volume.
 ./do --data=$DATA_DIR --inv=$LA_INV --ala-install=$AL_INSTALL run
 ```
 
-### 3) Finally, generate all `/data` in `DATA_DIR`
+### 4) Finally, generate all `/data` in `DATA_DIR`
 
 ```bash
 ./do generate
