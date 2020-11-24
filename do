@@ -61,7 +61,11 @@ fi
 function gen() {
     local what="$1"
     echo "Generating config for '$what'"
-    $_D docker exec -i -t $IMGNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install $what --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures --nodryrun"
+    if $verbose; then V="-vvvv" ; else V=""; fi
+    $_D docker exec -i -t $IMGNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install $what --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures,db -e 'skip_handlers=true' --nodryrun $V"
+    if [ $? -ne 0 ]; then
+      >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
+    fi
 }
 
 if [[ -n $service ]] ; then

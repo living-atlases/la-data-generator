@@ -68,13 +68,12 @@ RUN useradd tomcat7 && \
 RUN mkdir -p /opt/solr/bin && \
     mkdir /usr/lib/biocache
 
-RUN git clone --depth 1 --branch v2.0.1 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
+RUN echo "2020112401 (change this date to rebuild & repeat this and the following steps)"
 
-# Disable tomcat restart and other services (we are oonly interested in configs)
-
-RUN echo "2020110501 (change this date to rebuild & repeat this and the following steps)"
-
-COPY ala-install.patch /ansible/ala-install.patch
-RUN (cd /ansible/ala-install && patch -p1 < /ansible/ala-install.patch)
+# Waiting to merge this:
+# https://github.com/AtlasOfLivingAustralia/ala-install/pull/448
+# RUN git clone --depth 1 --branch v2.0.1 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
+# til this PR is merged:
+RUN git clone --depth 1 --branch cas5-refactor https://github.com/vjrj/ala-install.git /ansible/ala-install
 
 CMD ["/usr/sbin/sshd", "-D"]
