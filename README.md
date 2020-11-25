@@ -87,12 +87,7 @@ docker pull livingatlases/la-data-generator
  
 ### Or run the image with some other `ala-install` 
 
-Clone `ala-install` in some directory. Take into account that we patch `ala-install` a bit to run some properties/config tasks without installing sofware. You can patch it with:
-
-```bash
-(cd $ALA_INSTALL && patch -p1 < $PWD/ala-install.patch)
-```
-And run this image with that `ala-install` volume.
+Clone `ala-install` in some directory and run this image with that `ala-install` volume.
 
 ```bash
 ./do --data=$DATA_DIR --inv=$LA_INV --ala-install=$AL_INSTALL run
