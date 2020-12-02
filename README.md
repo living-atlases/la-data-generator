@@ -151,10 +151,6 @@ Options:
 
 ```
 
-## Caveats
-
-- While this [PR is merged](https://github.com/AtlasOfLivingAustralia/ala-install/pull/448/) we use this branch to generate also the properties of the CAS services.
-
 ## License
 
 Apache-2.0 © [Living Atlases](https://living-atlases.gbif.org)

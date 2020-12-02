@@ -70,10 +70,6 @@ RUN mkdir -p /opt/solr/bin && \
 
 RUN echo "2020112401 (change this date to rebuild & repeat this and the following steps)"
 
-# Waiting to merge this:
-# https://github.com/AtlasOfLivingAustralia/ala-install/pull/448
-# RUN git clone --depth 1 --branch v2.0.1 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
-# til this PR is merged:
-RUN git clone --depth 1 --branch cas5-refactor https://github.com/vjrj/ala-install.git /ansible/ala-install
+RUN git clone --depth 1 --branch v2.0.2 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
 
 CMD ["/usr/sbin/sshd", "-D"]
