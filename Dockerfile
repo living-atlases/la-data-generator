@@ -9,7 +9,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     
 RUN python3 -m pip install --upgrade pip cffi \
     pip install setuptools && \
-    pip install ansible==2.9.7 && \
+    pip install ansible==2.10.3 && \
     pip install mitogen ansible-lint
 
 RUN mkdir /ansible && \
@@ -70,6 +70,6 @@ RUN mkdir -p /opt/solr/bin && \
 
 RUN echo "2020112401 (change this date to rebuild & repeat this and the following steps)"
 
-RUN git clone --depth 1 --branch v2.0.2 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
+RUN git clone --depth 1 --branch v2.0.3 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
 
 CMD ["/usr/sbin/sshd", "-D"]
