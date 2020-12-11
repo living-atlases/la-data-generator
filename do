@@ -63,7 +63,7 @@ function gen() {
     local what="$1"
     echo "Generating config for '$what'"
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -i -t $CNTNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install $what --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures,db -e 'skip_handlers=true' --nodryrun $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install $what --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures,db -e 'skip_handlers=true' --nodryrun $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
@@ -104,13 +104,13 @@ elif $run ; then
     if [[ $CONTAINER_RUNNING = 1 ]] ; then docker stop $CNTNAME; sleep 2; fi
 
     if [[ ! -d $ala_install ]] ; then
-       $_D docker run --rm -i -v $data:/data -v $inv:/ansible/la-inventories -P -d --name $CNTNAME $IMGNAME:latest
+       $_D docker run --rm -t -v $data:/data -v $inv:/ansible/la-inventories -P -d --name $CNTNAME $IMGNAME:latest
    else
-       $_D docker run --rm -i -v $data:/data -v $inv:/ansible/la-inventories -v $ala_install:/ansible/ala-install -P -d --name $CNTNAME $IMGNAME:latest
+       $_D docker run --rm -t -v $data:/data -v $inv:/ansible/la-inventories -v $ala_install:/ansible/ala-install -P -d --name $CNTNAME $IMGNAME:latest
    fi
 elif $generate ; then
     if [[ $CONTAINER_RUNNING = 0 ]] ; then >&2 echo "Please use 'build' and 'run' before 'generate'"; exit 1; fi
-    $_D docker exec -i -t $CNTNAME bash -c "cat /ansible/la-inventories/dot-ssh-config  | sed 's/1.2.3.X/127.0.0.1/g' | sed 's/IdentityFile/#IdentityFile/g' > /root/.ssh/config.d/la"
+    $_D docker exec -t $CNTNAME bash -c "cat /ansible/la-inventories/dot-ssh-config  | sed 's/1.2.3.X/127.0.0.1/g' | sed 's/IdentityFile/#IdentityFile/g' > /root/.ssh/config.d/la"
     if [[ -n $service ]] ; then
         for s in "${services[@]}"; do
             gen "$s"
