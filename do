@@ -104,9 +104,9 @@ elif $run ; then
     if [[ $CONTAINER_RUNNING = 1 ]] ; then docker stop $CNTNAME; sleep 2; fi
 
     if [[ ! -d $ala_install ]] ; then
-       $_D docker run --rm -it -v $data:/data -v $inv:/ansible/la-inventories -P -d --name $CNTNAME $IMGNAME:latest
+       $_D docker run --rm -i -v $data:/data -v $inv:/ansible/la-inventories -P -d --name $CNTNAME $IMGNAME:latest
    else
-       $_D docker run --rm -it -v $data:/data -v $inv:/ansible/la-inventories -v $ala_install:/ansible/ala-install -P -d --name $CNTNAME $IMGNAME:latest
+       $_D docker run --rm -i -v $data:/data -v $inv:/ansible/la-inventories -v $ala_install:/ansible/ala-install -P -d --name $CNTNAME $IMGNAME:latest
    fi
 elif $generate ; then
     if [[ $CONTAINER_RUNNING = 0 ]] ; then >&2 echo "Please use 'build' and 'run' before 'generate'"; exit 1; fi
