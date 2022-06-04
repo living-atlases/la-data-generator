@@ -1,16 +1,19 @@
 FROM ubuntu:18.04
 
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-        apt-get install -y software-properties-common python-docopt sudo curl && \
-        apt-get install -y python-dev git python-pip python3-minimal 'python2.*-minimal' && \
-        apt-get install -y gnupg2 python3-pip sshpass openssh-client openssh-server vim && \
+        apt-get install -y software-properties-common python-docopt sudo curl \
+        python-dev git 'python.*-pip' python3-minimal 'python2.*-minimal' \
+        gnupg2 python3-pip sshpass openssh-client openssh-server vim && \
         rm -rf /var/lib/apt/lists/* && \
         apt-get clean
     
 RUN python3 -m pip install --upgrade pip cffi \
     pip install setuptools && \
-    pip install ansible==2.10.3 && \
-    pip install mitogen ansible-lint
+    pip install ansible==2.10.3 ansible-base==2.10.3 && \
+    pip install ansible-lint
 
 RUN mkdir /ansible && \
     mkdir -p /etc/ansible && \
@@ -70,6 +73,6 @@ RUN mkdir -p /opt/solr/bin && \
 
 RUN echo "2021012601 (change this date to rebuild & repeat this and the following steps)"
 
-RUN git clone --depth 1 --branch v2.0.10 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
+RUN git clone --depth 1 --branch v2.1.7 https://github.com/AtlasOfLivingAustralia/ala-install.git /ansible/ala-install
 
 CMD ["/usr/sbin/sshd", "-D"]
