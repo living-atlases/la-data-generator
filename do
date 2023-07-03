@@ -4,7 +4,7 @@ set -e
 
 CMD=$(basename $0)
 
-IMGNAME=livingatlases/la-data-generator
+IMGNAME=docker.io/livingatlases/la-data-generator
 CNTNAME=la-data-generator
 
 if [[ ! -e ./docopts ]] ; then
