@@ -16,6 +16,7 @@ eval "$(./docopts -V - -h - : "$@" <<EOF
 
 $CMD: LA data generator
 
+Usage:
   $CMD [options] build
   $CMD [options] --data=<dir> --inv=<dir> [--ala-install=<dir>] run
   $CMD [options] generate [<service>...]
@@ -75,7 +76,7 @@ function genCustom() {
     local play="$2"
     echo "Generating config for '$inv' and '$play'"
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv /ansible/ala-install/ansible/$play --tags common,augeas,properties --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true' $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv /ansible/ala-install/ansible/$play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true,tomcat_user=tomcat,tomcat=tomcat8' $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
@@ -123,7 +124,7 @@ elif $run ; then
 elif $generate_custom ; then
       if [[ $CONTAINER_RUNNING = 0 ]] ; then >&2 echo "Please use 'build' and 'run' before 'generate'"; exit 1; fi
 
-        echo /ansible/la-inventories/$custom_inv
+        echo "/ansible/la-inventories/$custom_inv"
         output=$($_D docker exec -t $CNTNAME bash -c "grep '# Run with' /ansible/la-inventories/$custom_inv")
 
         #inventory_pattern="-i"
@@ -134,9 +135,6 @@ elif $generate_custom ; then
 
           playbook=$(awk -F "$playbook_pattern" '{print $2}' <<< "$line" | awk '{gsub(/--.*$/, ""); print}')
           playbook=${playbook// /}
-
-#                hosts=$(docker exec -t $CNTNAME bash -c "ansible-inventory -i /ansible/la-inventories/$custom_inv --graph 2>&1 | awk '/^  ([^ ]+)/ {print $2}' | sed 's/|--\(@\)//g' | sed 's/:.*//g' | grep -v '^|$' |  sed 's/|--//g' | sed 's/|//g' | egrep -v 'to see|WARNING|^$' | paste -s - -")
-
         fi
         done <<< "$output"
       $_D docker exec -t $CNTNAME bash -c "echo -e 'Host *\n  Hostname 127.0.0.1\n  StrictHostKeyChecking no\n' > /root/.ssh/config.d/la"
