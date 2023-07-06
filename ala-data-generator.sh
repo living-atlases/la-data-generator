@@ -1,5 +1,14 @@
 #!/bin/bash
 
+#
+# Build as says in the README and run first:
+# ./do build
+# ./do --data=/home/youruser/dev/la-data-generator/data --inv=/home/youruser/dev/ala/ansible-inventories/ --ala-install=/home/youruser/dev/ala-install run
+# and then run:
+# ./ala-data-generator.sh 
+# or for some specific service:
+#./ala-data-generator.sh biocache
+
 set -e
 
 list=(

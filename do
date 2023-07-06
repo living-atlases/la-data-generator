@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# It will fail if some playbook fails 
 set -e
 
 CMD=$(basename $0)
