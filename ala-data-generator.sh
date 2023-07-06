@@ -42,7 +42,7 @@ optional_arg="$1"
 for el in "${list[@]}"
 do
   if [[ -z $optional_arg ]] || [[ $el == *"$optional_arg"* ]]; then
-    echo -n "$el "
+    # echo -n "$el "
     ./do generate_custom "$el"
   fi
 done
