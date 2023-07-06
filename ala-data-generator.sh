@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 list=(
   "./alerts/alerts-prod"
   "./auth/aws-auth-prod.yml"
@@ -35,8 +37,12 @@ list=(
   "./specieslists/specieslists-prod"
 )
 
+optional_arg="$1"
+
 for el in "${list[@]}"
 do
-  echo -n "$el "
-  ./do generate_custom $el
+  if [[ -z $optional_arg ]] || [[ $el == *"$optional_arg"* ]]; then
+    echo -n "$el "
+    ./do generate_custom "$el"
+  fi
 done
