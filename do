@@ -75,8 +75,9 @@ function genCustom() {
     local inv="$1"
     local play="/ansible/ala-install/ansible$2"
     echo "Generating config for '$inv' and '$play'"
+
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true' $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat' $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
@@ -104,6 +105,11 @@ elif $run ; then
         exit 1
     fi
 
+    if [ -z "$(find $inv -mindepth 1 -print -quit)" ]; then
+        >&2 echo "WARN: It seems that '$inv' is empty"
+        exit 1
+    fi
+
     if [[ ! -d $inv || ! -f $inv/ansiblew ]]; then
         >&2 echo "WARN: It seems that '$inv' is not a generated inventory as we expect"
         # exit 1
@@ -125,7 +131,9 @@ elif $generate_custom ; then
       if [[ $CONTAINER_RUNNING = 0 ]] ; then >&2 echo "Please use 'build' and 'run' before 'generate'"; exit 1; fi
 
         echo "Processing /ansible/la-inventories/$custom_inv"
-        output=$($_D docker exec -t $CNTNAME bash -c "grep 'ansible-playbook -i' /ansible/la-inventories/$custom_inv")
+        set +e
+        output=$($_D docker exec -t $CNTNAME bash -c "grep 'ansible-playbook -i' /ansible/la-inventories/$custom_inv 2>&1")
+        set -e
 
         #inventory_pattern="-i"
         playbook_pattern="ala-install/ansible"
