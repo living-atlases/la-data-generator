@@ -73,10 +73,10 @@ function gen() {
 
 function genCustom() {
     local inv="$1"
-    local play="$2"
+    local play="/ansible/ala-install/ansible$2"
     echo "Generating config for '$inv' and '$play'"
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv /ansible/ala-install/ansible/$play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true' $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true' $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
@@ -124,19 +124,25 @@ elif $run ; then
 elif $generate_custom ; then
       if [[ $CONTAINER_RUNNING = 0 ]] ; then >&2 echo "Please use 'build' and 'run' before 'generate'"; exit 1; fi
 
-        echo "/ansible/la-inventories/$custom_inv"
-        output=$($_D docker exec -t $CNTNAME bash -c "grep '# Run with' /ansible/la-inventories/$custom_inv")
+        echo "Processing /ansible/la-inventories/$custom_inv"
+        output=$($_D docker exec -t $CNTNAME bash -c "grep 'ansible-playbook -i' /ansible/la-inventories/$custom_inv")
 
         #inventory_pattern="-i"
         playbook_pattern="ala-install/ansible"
 
         while IFS= read -r line; do
-          if [[ $line == *"Run with ansible-playbook"* ]]; then
+          if [[ $line == *"ansible-playbook -i"* ]]; then
 
           playbook=$(awk -F "$playbook_pattern" '{print $2}' <<< "$line" | awk '{gsub(/--.*$/, ""); print}')
           playbook=${playbook// /}
         fi
         done <<< "$output"
+
+      if [[ -z "$playbook" ]]; then
+        >&2 echo "Playbook not detected in inventory comments"
+        exit 1
+      fi
+
       $_D docker exec -t $CNTNAME bash -c "echo -e 'Host *\n  Hostname 127.0.0.1\n  StrictHostKeyChecking no\n' > /root/.ssh/config.d/la"
       genCustom "$inv$custom_inv" "$playbook"
 elif $generate ; then
