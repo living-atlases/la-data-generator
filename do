@@ -77,7 +77,7 @@ function genCustom() {
     echo "Generating config for '$inv' and '$play'"
 
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat' $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat8 tomcat_apr=false' $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
@@ -123,9 +123,9 @@ elif $run ; then
     if [[ $CONTAINER_RUNNING = 1 ]] ; then docker stop $CNTNAME; sleep 2; fi
 
     if [[ ! -d $ala_install ]] ; then
-       $_D docker run --rm -t -v $data:/data -v $inv:/ansible/la-inventories -P -d --name $CNTNAME $IMGNAME:latest
+       $_D docker run --rm -t -v $data:/data:rw -v $inv:/ansible/la-inventories:rw -P -d --name $CNTNAME $IMGNAME:latest
    else
-       $_D docker run --rm -t -v $data:/data -v $inv:/ansible/la-inventories -v $ala_install:/ansible/ala-install -P -d --name $CNTNAME $IMGNAME:latest
+       $_D docker run --rm -t -v $data:/data:rw -v $inv:/ansible/la-inventories:rw -v $ala_install:/ansible/ala-install:rw -P -d --name $CNTNAME $IMGNAME:latest
     fi
 elif $generate_custom ; then
       if [[ $CONTAINER_RUNNING = 0 ]] ; then >&2 echo "Please use 'build' and 'run' before 'generate'"; exit 1; fi
