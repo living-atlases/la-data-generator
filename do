@@ -78,7 +78,7 @@ function genCustom() {
     echo "Generating config for '$inv' and '$play'"
 
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat8 tomcat_apr=false' $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat8 tomcat_apr=false biocollect_user=tomcat8' $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
