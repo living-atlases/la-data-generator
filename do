@@ -62,11 +62,16 @@ if $verbose; then
     echo container running: $CONTAINER_RUNNING
 fi
 
+
+TAGS=common,augeas,properties,tomcat,mongodb-org
+SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart
+EXTRAS="skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat8 tomcat_apr=false biocollect_user=tomcat8 ecodata_user=tomcat8"
+
 function gen() {
     local what="$1"
     echo "Generating config for '$what'"
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install ansible$what --tags=common,augeas,tomcat,properties --skip=restart,image-stored-procedures,db -e 'skip_handlers=true' --nodryrun $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install ansible$what --tags=$TAGS --skip=$SKIP_TAGS -e '$EXTRAS' --nodryrun $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
@@ -78,7 +83,7 @@ function genCustom() {
     echo "Generating config for '$inv' and '$play'"
 
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags common,augeas,properties,tomcat --skip-tags restart,image-stored-procedures,db --extra-vars 'skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat8 tomcat_apr=false biocollect_user=tomcat8' $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ansible-playbook -u ubuntu --become -i $inv $play --tags $TAGS --skip-tags $SKIP_TAGS --extra-vars '$EXTRAS' $V"
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
