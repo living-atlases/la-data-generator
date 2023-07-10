@@ -63,8 +63,8 @@ if $verbose; then
 fi
 
 
-TAGS=common,augeas,properties,tomcat,mongodb-org,,namematching-service,pipelines,apt
-SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users
+TAGS=common,augeas,properties,tomcat,mongodb-org,,namematching-service,pipelines,apt,pipelines-layers
+SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,sslcerts,pipelines-services,hadoop_dir,hadoop_vocab
 EXTRAS="skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat8 tomcat_apr=false biocollect_user=tomcat8 ecodata_user=tomcat8 merit_user=tomcat8 fieldguide_app=fieldguide use_docker_with_pipelines=false spark_user=root profile_service_user=root profile_hub_user=root"
 
 function gen() {
