@@ -46,12 +46,22 @@ list=(
   #"./pipelines/aws-spark-quoll-pipelines.yml"
   #"./pipelines/nci3-spark-pipelines.yml"
 
-optional_arg="$1"
+optional_args=("$@")
 
 for el in "${list[@]}"
 do
-  if [[ -z $optional_arg ]] || [[ $el == *"$optional_arg"* ]]; then
+  match=false
+  for arg in "${optional_args[@]}"
+  do
+    if [[ $el == *"$arg"* ]]; then
+      match=true
+      break
+    fi
+  done
+
+  if [[ -z "${optional_args[*]}" ]] || $match; then
     # echo -n "$el "
     ./do generate_custom "$el"
   fi
 done
+
