@@ -63,7 +63,7 @@ if $verbose; then
 fi
 
 
-TAGS=common,augeas,properties,tomcat,mongodb-org,,namematching-service,pipelines,apt,pipelines-layers
+TAGS=common,augeas,properties,tomcat,mongodb-org,namematching-service,pipelines,apt,pipelines-layers
 SKIP_TAGS=restart,image-stored-procedures,db,mongodb-org-restart,mongodb-users,sslcerts,pipelines-services,hadoop_dir,hadoop_vocab
 EXTRAS="skip_handlers=true tomcat=tomcat8 tomcat_user=tomcat8 tomcat_apr=false biocollect_user=tomcat8 ecodata_user=tomcat8 merit_user=tomcat8 fieldguide_app=fieldguide use_docker_with_pipelines=false spark_user=root profile_service_user=root profile_hub_user=root"
 
@@ -71,7 +71,8 @@ function gen() {
     local what="$1"
     echo "Generating config for '$what'"
     if $verbose; then V="-vvvv" ; else V=""; fi
-    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install ansible$what --tags=$TAGS --skip=$SKIP_TAGS -e '$EXTRAS' --nodryrun $V"
+    $_D docker exec -t $CNTNAME bash -c "cd /ansible/la-inventories; ./ansiblew --alainstall=/ansible/ala-install $what --tags=$TAGS --skip=$SKIP_TAGS -e '$EXTRAS' --nodryrun $V"
+
     if [ $? -ne 0 ]; then
       >&2 echo "The generation failed, are you inventories and/or your ala-install repo up-to-date?"
     fi
